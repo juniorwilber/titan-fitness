@@ -1,0 +1,764 @@
+/* =========================================================================
+   TITAN FITNESS — Hoja de estilos principal
+   -------------------------------------------------------------------------
+   Organización:
+   1. Variables (tokens de diseño: colores, fuentes)
+   2. Reset y estilos base
+   3. Utilidades reutilizables (contenedor, títulos de sección, botones)
+   4. Header y navegación (escritorio + menú hamburguesa móvil)
+   5. Secciones (hero, stats, clases, planes, nosotros, testimonios, contacto)
+   6. WhatsApp flotante
+   7. Footer
+   8. Responsive (media queries)
+   ========================================================================= */
+
+/* ============ 1. VARIABLES / TOKENS DE DISEÑO ============ */
+:root {
+  --accent: #C6F135;        /* verde lima de la marca */
+  --accent-ink: #0B0C0A;    /* texto oscuro sobre el acento */
+  --bg: #0B0C0D;            /* fondo general */
+  --surface: #131415;       /* tarjetas */
+  --surface-2: #0E0F10;     /* secciones alternas */
+  --footer-bg: #0A0A0B;
+  --text: #F2F3EE;          /* texto principal */
+  --muted: #C9CBC4;         /* texto secundario */
+  --dim: #8B8E86;           /* texto terciario / notas */
+  --border: #1E2022;        /* bordes sutiles */
+  --border-2: #2A2C2E;      /* bordes de inputs */
+  --border-3: #4A4D46;      /* bordes de botones secundarios */
+  --error: #FF6B57;         /* mensajes de validación */
+  --max-width: 1240px;
+  --pad-x: clamp(16px, 4vw, 40px);   /* padding horizontal responsivo */
+  --pad-y: clamp(64px, 9vw, 110px);  /* padding vertical de secciones */
+}
+
+/* ============ 2. RESET Y BASE ============ */
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  /* Compensa el header fijo al saltar a una sección con ancla */
+  scroll-padding-top: 80px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--accent); }
+
+img { display: block; max-width: 100%; }
+
+input, select, textarea, button { font-family: 'Barlow', sans-serif; }
+
+/* Estado de foco visible y consistente para navegación por teclado */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 0; }
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* Enlace "saltar al contenido" para lectores de pantalla / teclado */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 12px 20px;
+  font-weight: 700;
+  z-index: 100;
+}
+.skip-link:focus {
+  left: 12px;
+  top: 12px;
+}
+
+/* Oculta visualmente pero mantiene accesible para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respeta la preferencia de menos animación */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+
+/* ============ 3. UTILIDADES REUTILIZABLES ============ */
+
+/* Contenedor centrado con ancho máximo */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: var(--pad-x);
+  padding-right: var(--pad-x);
+}
+
+/* Bloque de sección con padding vertical estándar */
+.section {
+  padding-top: var(--pad-y);
+  padding-bottom: var(--pad-y);
+}
+.section--alt {
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Etiqueta pequeña en mayúsculas (kicker) que encabeza cada sección */
+.kicker {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+/* Títulos de sección con la tipografía display */
+.section-title {
+  margin: 0 0 18px;
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: clamp(36px, 5.5vw, 64px);
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.accent { color: var(--accent); }
+
+/* Texto introductorio bajo los títulos */
+.section-lead {
+  margin: 0 0 42px;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+/* --- Botones --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.btn--primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.btn--primary:hover {
+  background: var(--text);
+  color: var(--accent-ink);
+}
+.btn--ghost {
+  border: 1px solid var(--border-3);
+  color: var(--text);
+  background: transparent;
+}
+.btn--ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+/* Tamaños */
+.btn--lg { padding: 18px 36px; font-size: 18px; }
+.btn--md { padding: 15px; font-size: 16px; }
+.btn--block { width: 100%; }
+
+/* Rejilla automática reutilizable para tarjetas */
+.grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+}
+
+/* ============ 4. HEADER Y NAVEGACIÓN ============ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(11, 12, 13, 0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+/* Logotipo tipográfico */
+.logo {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'Anton', sans-serif;
+  font-size: 26px;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+.logo span { color: var(--accent); }
+
+/* Navegación de escritorio */
+.nav-desktop {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 3vw, 36px);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.nav-desktop a { color: var(--muted); transition: color .2s ease; }
+.nav-desktop a:hover { color: var(--accent); }
+/* Enlace de la sección activa (lo marca el JS) */
+.nav-desktop a.is-active { color: var(--text); }
+.nav-desktop .btn { margin-left: 4px; }
+.btn--nav { padding: 12px 24px; font-size: 15px; }
+
+/* Botón hamburguesa (solo visible en móvil) */
+.nav-toggle {
+  display: none;   /* se muestra en la media query móvil */
+  background: none;
+  border: 1px solid var(--border-2);
+  padding: 12px;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  transition: transform .25s ease, opacity .25s ease;
+}
+.nav-toggle span:first-child { background: var(--accent); }
+
+/* Animación de la hamburguesa a "X" cuando el menú está abierto */
+.nav-toggle[aria-expanded="true"] span:first-child {
+  transform: translateY(6px) rotate(45deg);
+}
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:last-child {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Menú desplegable móvil */
+.nav-mobile {
+  display: none;              /* oculto por defecto; el JS lo abre */
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  padding: 8px 0 16px;
+}
+.nav-mobile.is-open { display: flex; }
+.nav-mobile a {
+  padding: 14px 24px;
+  font-family: 'Anton', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.nav-mobile a.is-active { color: var(--text); }
+.nav-mobile .btn {
+  margin: 10px 24px 0;
+  padding: 14px 24px;
+  font-size: 18px;
+}
+
+/* ============ 5. SECCIONES ============ */
+
+/* --- Hero --- */
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.hero__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(11, 12, 13, 0.55) 0%,
+    rgba(11, 12, 13, 0.25) 40%,
+    rgba(11, 12, 13, 0.92) 88%);
+}
+.hero__content {
+  position: relative;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  width: 100%;
+  padding: clamp(80px, 14vh, 160px) var(--pad-x) clamp(48px, 8vh, 88px);
+}
+.hero__eyebrow {
+  margin: 0 0 14px;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: clamp(12px, 1.4vw, 15px);
+}
+.hero__title {
+  margin: 0;
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: clamp(52px, 9vw, 124px);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  max-width: 14ch;
+  text-wrap: pretty;
+}
+.hero__text {
+  margin: 22px 0 0;
+  max-width: 52ch;
+  font-size: clamp(16px, 2vw, 19px);
+  line-height: 1.55;
+  color: var(--muted);
+}
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+/* --- Franja de estadísticas --- */
+.stats {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.stats__grid {
+  padding-top: 26px;
+  padding-bottom: 26px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  gap: 20px;
+}
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.stat__num {
+  font-family: 'Anton', sans-serif;
+  font-size: 34px;
+  color: var(--accent);
+}
+.stat__label {
+  color: var(--muted);
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* --- Tarjetas de clases --- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: border-color .2s ease;
+}
+.card:hover { border-color: var(--accent); }
+.card__img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+.card__body { padding: 20px 22px 24px; }
+.card__title {
+  margin: 0 0 8px;
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: 22px;
+  letter-spacing: 0.03em;
+}
+.card__text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* --- Toggle de precios Mensual / Anual --- */
+.billing-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 5px;
+  margin-bottom: 32px;
+}
+.billing-toggle__btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+.billing-toggle__btn.is-active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.billing-toggle__save {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-left: 4px;
+}
+
+/* --- Tarjetas de planes --- */
+.plan {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.plan--featured { border: 2px solid var(--accent); }
+.plan__badge {
+  position: absolute;
+  top: -14px;
+  left: 28px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: 'Anton', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  padding: 6px 14px;
+}
+.plan__name {
+  margin: 0;
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.plan--featured .plan__name { color: var(--accent); }
+.plan__price {
+  margin: 16px 0 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.plan__amount {
+  font-family: 'Anton', sans-serif;
+  font-size: 52px;
+  line-height: 1;
+}
+.plan__period { color: var(--dim); font-size: 15px; }
+.plan__note {
+  margin: 0 0 22px;
+  color: var(--dim);
+  font-size: 14px;
+}
+.plan__features {
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 15px;
+}
+.plan__features li { display: flex; gap: 10px; }
+.plan__features li::before {
+  content: "—";
+  color: var(--accent);
+  font-weight: 700;
+}
+.plan .btn { margin-top: auto; }
+
+/* --- Nosotros --- */
+.about {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+}
+.about__text p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.about__text p:last-child { margin-bottom: 0; }
+.about__gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.about__gallery img { width: 100%; object-fit: cover; }
+.about__gallery img:first-child { grid-column: 1 / -1; height: 220px; }
+.about__gallery img:not(:first-child) { height: 160px; }
+
+/* --- Testimonios --- */
+.testimonial {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.testimonial blockquote {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.testimonial figcaption {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: auto;
+}
+.testimonial__avatar {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.testimonial__name { margin: 0; font-weight: 700; font-size: 15px; }
+.testimonial__role {
+  margin: 2px 0 0;
+  color: var(--dim);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* --- Contacto --- */
+.contact {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: clamp(28px, 5vw, 64px);
+}
+.contact__intro p { color: var(--muted); font-size: 17px; line-height: 1.6; }
+.contact__details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--muted);
+  font-size: 16px;
+  margin-top: 28px;
+}
+.contact__details p { margin: 0; }
+.contact__details a { color: var(--muted); }
+.contact__details a:hover { color: var(--accent); }
+.contact__label {
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* --- Formulario --- */
+.form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: clamp(24px, 4vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.field input,
+.field select {
+  background: var(--bg);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  padding: 14px;
+  font-size: 16px;
+}
+/* Marca de campo inválido */
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"] {
+  border-color: var(--error);
+}
+/* Mensaje de error bajo cada campo */
+.field__error {
+  color: var(--error);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  min-height: 1em;
+}
+.form__submit { margin-top: 4px; }
+
+/* Mensaje de éxito tras enviar */
+.form-success {
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  padding: clamp(32px, 5vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+.form-success__title {
+  margin: 0;
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: 32px;
+  color: var(--accent);
+}
+.form-success p {
+  margin: 0;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.is-hidden { display: none !important; }
+
+/* ============ 6. WHATSAPP FLOTANTE ============ */
+.whatsapp-float {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 60;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: 'Anton', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  padding: 14px 22px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background .2s ease, color .2s ease;
+}
+.whatsapp-float:hover { background: var(--text); color: var(--accent-ink); }
+.whatsapp-float__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent-ink);
+  display: inline-block;
+}
+
+/* ============ 7. FOOTER ============ */
+.site-footer {
+  background: var(--footer-bg);
+  border-top: 1px solid var(--border);
+}
+.site-footer__grid {
+  padding-top: clamp(48px, 7vw, 72px);
+  padding-bottom: 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 36px;
+}
+.site-footer__brand {
+  margin: 0 0 12px;
+  font-family: 'Anton', sans-serif;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+.site-footer__brand span { color: var(--accent); }
+.site-footer p { margin: 0; }
+.site-footer__desc { color: var(--dim); font-size: 15px; line-height: 1.6; max-width: 32ch; }
+.site-footer__heading {
+  margin: 0 0 14px;
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 13px;
+}
+.site-footer__text { color: var(--muted); font-size: 15px; line-height: 1.9; }
+.site-footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 15px;
+}
+.site-footer__links a { color: var(--muted); }
+.site-footer__links a:hover { color: var(--accent); }
+.site-footer__bottom { border-top: 1px solid var(--border); }
+.site-footer__copy {
+  padding-top: 18px;
+  padding-bottom: 18px;
+  color: var(--dim);
+  font-size: 13px;
+}
+
+/* ============ 8. RESPONSIVE ============ */
+/* Punto de quiebre a 920px: bajo este ancho se usa el menú hamburguesa */
+@media (max-width: 920px) {
+  .nav-desktop { display: none; }
+  .nav-toggle { display: flex; }
+}
+
+/* Ajustes finos para pantallas pequeñas (celular) */
+@media (max-width: 520px) {
+  .hero { min-height: 92vh; }
+  .btn--lg { width: 100%; }         /* botones del hero a ancho completo */
+  .hero__cta { flex-direction: column; }
+  .billing-toggle { width: 100%; justify-content: center; }
+  .about__gallery img:first-child { height: 180px; }
+}
