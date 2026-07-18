@@ -17,7 +17,7 @@ Landing page para **Titan Fitness**, un gimnasio urbano ubicado en San Borja, Li
 ## 🖼️ Captura de pantalla
 
 <!-- Reemplaza la ruta por tu captura, por ejemplo: assets/img/screenshot.png -->
-![Captura de pantalla de Titan Fitness](URL_DE_LA_CAPTURA)
+![Captura de pantalla de Titan Fitness](assets/img/screenshot.png)
 
 ---
 
