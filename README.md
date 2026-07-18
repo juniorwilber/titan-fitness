@@ -24,7 +24,7 @@ Landing page para **Titan Fitness**, un gimnasio urbano ubicado en San Borja, Li
 ## 🌐 Sitio en vivo
 
 <!-- Pega aquí el enlace a la web publicada (GitHub Pages, Netlify, Vercel, etc.) -->
-🔗 [Ver web en vivo](URL_DE_LA_WEB_EN_VIVO)
+🔗 [Ver web en vivo](https://juniorwilber.github.io/titan-fitness/)
 
 ---
 
