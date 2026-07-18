@@ -14,7 +14,7 @@ desktop.ini
 *.swp
 *~
 
-# Herramientas locales / Claude Code
+# Config local / editor
 .claude/
 
 # Compilados y temporales
